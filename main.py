@@ -9,7 +9,7 @@ import platform
 try:
     if platform.system() == 'Windows':
         os.system('cls')
-        os.system('title [Lightshot Bruteforcer] by 1YablochniK1 ^| V1.2 ^|')
+        os.system('title [Lightshot Bruteforcer] by 1YablochniK1 ^| V1.3 ^|')
         os.system('mode CON COLS=55 LINES=30')
     else:
         os.system('clear')
@@ -45,8 +45,10 @@ def reset():
 
 def configC():
     config = ConfigParser()
-    config['Lightshot-Bruteforcer'] = {'thread_count':'300', 
-     'save-img_path':'Images'}
+    config['Lightshot-Bruteforcer'] = {
+     'thread_count':'300', 
+     'save-img_path':'Images',
+     'grab_proxies': "True"}
     with open(cfg_path, 'w') as (f):
         config.write(f)
     configR()
@@ -55,6 +57,7 @@ def configC():
 def configR():
     global saveimg_path
     global thc
+    global gp_toggle
     try:
         parser = ConfigParser()
         parser.read(cfg_path)
@@ -71,6 +74,7 @@ def configR():
         saveimg_path = parser.get('Lightshot-Bruteforcer', 'save-img_path')
         if not os.path.exists(saveimg_path):
             os.makedirs(saveimg_path)
+        gp_toggle = parser.get("Lightshot-Bruteforcer", "grab_proxies")
     except:
         configC()
         configR()
@@ -138,6 +142,10 @@ def main(proxy):
     except:
         retries += 1
     else:
+        if gp_toggle == "True":
+            ff = open("http_proxy.txt", "a")
+            ff.write(f"{proxy}\n")
+            ff.close()
         if 'name="twitter:image:src" content="' in check and '0_173a7b_211be8ff' not in check and 'ml3U3Pt' not in check:
             lock.acquire()
             sys.stdout.write(f'[{green()}+++{reset()}] https://prnt.sc/{code} [{cyan()}{proxy}{reset()}]\n')
